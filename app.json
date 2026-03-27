@@ -7,6 +7,12 @@
     "icon": "./assets/images/icon.png",
     "scheme": "freshapp",
     "userInterfaceStyle": "automatic",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/00000000-0000-0000-0000-000000000000"
+    },
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
@@ -38,7 +44,25 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-secure-store",
+      "expo-font",
+      "expo-localization",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos to pick images.",
+          "cameraPermission": "Allow $(PRODUCT_NAME) to use the camera."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#0F62FE"
+        }
+      ],
+      "expo-updates"
     ],
     "experiments": {
       "typedRoutes": true,
