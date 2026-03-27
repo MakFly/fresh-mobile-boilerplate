@@ -2,85 +2,87 @@
 
 Production-oriented Expo Router starter for React Native apps on iOS and Android.
 
-It ships with a real app shell, onboarding, authentication flows, persistent state, typed forms, deep-link handling, a sample AI chat stack, and a clean path from local demo mode to a backend-connected setup.
+This repository is meant to be a strong starting point for real mobile products, not just a demo. It includes a complete route structure, onboarding, auth flows, persistent app state, typed forms, deep-link handling, CI, and a sample AI chat stack.
 
-## Highlights
+## What You Get
 
-- Expo SDK 54 + React Native 0.81 + Expo Router
-- TypeScript with strict mode enabled
+- Expo SDK 54 + React Native 0.81
+- Expo Router app structure with:
+  - onboarding flow
+  - public auth flow
+  - main app shell
+  - isolated sample stack
+- TypeScript with strict mode
 - `bun` as the package manager
-- Auth flow with:
-  - local demo repository for fast UI iteration
-  - remote repository adapter for backend-ready auth
-  - session restore
-  - sign in, sign up, sign out, forgot password, profile update
-- Onboarding flow separated from the main app shell
-- Public routes, app routes, and an isolated samples stack
 - Zustand + MMKV / localStorage persistence
-- TanStack Query configured with NetInfo online sync
-- `react-hook-form` + Zod validation
-- API client built with `ky`
+- TanStack Query with online/offline sync via NetInfo
+- `react-hook-form` + Zod
+- `ky` API client
+- theme preference: system / light / dark
 - i18n with English and French
-- Theme preference: system, light, dark
-- Push notification scaffold
-- OTA update check scaffold
-- Typed environment resolution and dynamic Expo config
-- Native deep-link rewriting through Expo Router `+native-intent`
-- Jest test setup and GitHub Actions CI
-- Sample Assistant UI chat implementation for React Native
+- push notification scaffold
+- OTA update scaffold
+- dynamic Expo config
+- native deep-link rewriting with Expo Router `+native-intent`
+- local demo auth + backend-ready remote auth adapter
+- sample Assistant UI React Native chat implementation
+- Jest test setup + GitHub Actions CI
 
-## Tech Stack
+## App Structure
 
-- Expo
-- Expo Router
-- React Native
-- TypeScript
-- Zustand
-- TanStack Query
-- React Hook Form
-- Zod
-- NativeWind
-- MMKV
-- Expo Secure Store
-- Expo Notifications
-- i18next
+```text
+app/
+  (onboarding)/       First-run onboarding flow
+  (public)/           Sign in, sign up, forgot password
+  (app)/              Main app shell and tabs
+  samples/chat/       Isolated AI chat sample
 
-## Included App Areas
+components/           Shared UI and app shell components
+core/                 Infrastructure: auth, env, api, storage, i18n, query, notifications
+features/             Product feature modules
+hooks/                Shared hooks
+providers/            Root providers
+```
 
-- `app/(onboarding)`: first-run onboarding flow
-- `app/(public)`: sign in, sign up, forgot password
-- `app/(app)`: main authenticated / post-onboarding application shell
-- `app/samples/chat`: isolated AI chat sample
+## Quick Start
 
-## Getting Started
+### Prerequisites
 
-### 1. Install dependencies
+- Bun
+- Node.js compatible with Expo SDK 54
+- Xcode for local iOS native builds
+- Java + Android toolchain for local Android native builds
+
+### Install
 
 ```bash
 bun install
-```
-
-### 2. Create local environment file
-
-```bash
 cp .env.example .env
 ```
 
-### 3. Start the app
+### Start development
 
 ```bash
 bun run start
 ```
 
-Then open:
+Useful shortcuts from the Expo terminal:
 
 - `i` for iOS
 - `a` for Android
 - `w` for web
 
+### Recommended validation
+
+```bash
+bun run check
+npx expo export --platform ios --output-dir dist/export-ios
+npx expo export --platform android --output-dir dist/export-android
+```
+
 ## Environment Variables
 
-The starter uses build-time Expo public env vars.
+The app uses Expo public env variables that are resolved in the dynamic Expo config.
 
 ```bash
 EXPO_PUBLIC_APP_ENV=development
@@ -91,40 +93,37 @@ EXPO_PUBLIC_EAS_PROJECT_ID=
 EXPO_PUBLIC_APP_LINK_HOSTS=
 ```
 
-### Variable reference
+### Reference
 
 - `EXPO_PUBLIC_APP_ENV`
-  - One of: `development`, `preview`, `production`
+  - `development | preview | production`
 - `EXPO_PUBLIC_APP_SCHEME`
-  - Custom app URL scheme used for native deep links
+  - custom native URL scheme
 - `EXPO_PUBLIC_API_URL`
-  - Base API origin for backend auth and API calls
+  - API origin used by backend auth and feature APIs
 - `EXPO_PUBLIC_AUTH_MODE`
-  - One of: `auto`, `local`, `remote`
-  - `auto`: use remote auth when `EXPO_PUBLIC_API_URL` is set, otherwise local auth
-  - `local`: always use the built-in demo auth repository
-  - `remote`: always use the backend auth repository
+  - `auto | local | remote`
 - `EXPO_PUBLIC_EAS_PROJECT_ID`
-  - Used for Expo push token registration
+  - required for Expo push token registration
 - `EXPO_PUBLIC_APP_LINK_HOSTS`
-  - Comma-separated HTTPS hosts for iOS Universal Links and Android App Links
+  - comma-separated domains for Universal Links / App Links
 
-## Authentication Modes
+## Authentication
 
-### Local demo auth
+### Local auth mode
 
-Use this when building UI before your backend exists.
+Use this mode when you want to build and test the app before your backend is ready.
 
-- Default demo account:
-  - email: `demo@fresh.app`
-  - password: `password123`
-- User records and session are stored locally with Secure Store
+Default demo account:
 
-### Remote auth
+- email: `demo@fresh.app`
+- password: `password123`
 
-When `EXPO_PUBLIC_API_URL` is configured and auth mode is `auto` or `remote`, the app switches to the remote auth repository.
+### Remote auth mode
 
-Expected backend endpoints:
+When `EXPO_PUBLIC_API_URL` is configured and `EXPO_PUBLIC_AUTH_MODE` is `auto` or `remote`, the app switches to the remote auth repository.
+
+Expected endpoints:
 
 - `POST /auth/sign-in`
 - `POST /auth/sign-up`
@@ -133,7 +132,7 @@ Expected backend endpoints:
 - `POST /auth/forgot-password`
 - `POST /auth/profile`
 
-Expected remote session shape:
+Expected session payload:
 
 ```json
 {
@@ -150,11 +149,11 @@ Expected remote session shape:
 
 ## Deep Linking
 
-The app supports:
+The project is ready for:
 
-- custom scheme links via `EXPO_PUBLIC_APP_SCHEME`
-- route rewriting through `app/+native-intent.tsx`
-- optional Universal Links / App Links via `EXPO_PUBLIC_APP_LINK_HOSTS`
+- custom scheme links
+- native path rewriting through `app/+native-intent.tsx`
+- optional iOS Universal Links and Android App Links
 
 Examples:
 
@@ -165,8 +164,8 @@ Examples:
 
 To enable verified HTTP links in production, you still need to host:
 
-- Apple `apple-app-site-association`
-- Android `assetlinks.json`
+- `apple-app-site-association`
+- `assetlinks.json`
 
 ## Scripts
 
@@ -188,78 +187,68 @@ bun run build:production
 bun run update:preview
 ```
 
-Equivalent Make targets are available through `make`.
+Equivalent `make` targets are available in the included [Makefile](/Users/kev/Documents/lab/sandbox/mobile/fresh-app/Makefile#L1).
 
-## Testing and Validation
+## Testing and CI
 
-This starter includes:
+Included today:
 
 - Jest with `jest-expo`
-- focused unit tests for:
-  - environment resolution
+- tests for:
+  - env resolution
   - auth repository selection
   - deep-link rewriting
-- CI that runs:
+- GitHub Actions CI running:
   - install
   - lint
   - typecheck
   - test
 
-Recommended local validation before shipping:
-
-```bash
-bun run check
-npx expo export --platform ios --output-dir dist/export-ios
-npx expo export --platform android --output-dir dist/export-android
-```
-
-## Local Build Notes
+## Build and Release Notes
 
 - Expo bundling/export has been validated locally for both iOS and Android
-- A full Android native local build requires Java to be installed
-- MMKV, biometrics, push notifications, and some native modules require a dev client or production build, not Expo Go
+- full Android native local builds require Java to be installed
+- MMKV, biometrics, push notifications, and several native APIs require a dev client or production build
+- `eas.json` already includes `development`, `preview`, and `production` profiles
 
-## Project Structure
+## Sample AI Chat
 
-```text
-app/
-  (app)/              Main application shell
-  (onboarding)/       First-run onboarding
-  (public)/           Auth screens
-  samples/chat/       AI chat sample
+The repository contains an isolated sample chat stack under `app/samples/chat`.
 
-components/           Reusable UI and app shell components
-core/                 Infrastructure: auth, env, API, storage, i18n, query, notifications
-features/             Feature modules
-hooks/                Shared hooks
-providers/            Root providers
-```
+It is useful for:
 
-## What Is Already Production-Friendly
+- testing gated sample flows
+- experimenting with Assistant UI on React Native
+- validating auth return paths for sample routes
 
-- strict TypeScript setup
-- Expo Router structure that separates app/public/onboarding/sample flows
-- backend-ready auth repository abstraction
-- persistent app preferences and route restoration
-- dynamic Expo config for environments and linking
-- CI with tests
-- EAS profiles for development, preview, and production
+If you want actual model responses, expose a backend endpoint at `/api/chat` and configure `EXPO_PUBLIC_API_URL`.
 
-## What You Still Need Before Shipping a Real Product
+## Current Status
 
-- connect the remote auth repository to your real backend
-- replace placeholder Expo Updates URL with your real EAS project URL
-- configure EAS project metadata and secrets
-- configure App Store / Play Store identifiers and credentials
-- register push tokens on your backend if you want real notification delivery
-- add your production Universal Link / App Link host files
+Already in place:
+
+- solid Expo Router structure
+- onboarding + auth flows
+- session restore and route restoration
+- dynamic Expo config and typed env resolution
+- local-to-remote auth transition path
+- theme preference handling
+- sample chat UI
+- test baseline
+- CI baseline
+
+Still expected from the app owner before shipping a real product:
+
+- connect remote auth to a real backend
+- replace the placeholder Expo Updates URL
+- configure production app identifiers and credentials
+- register push tokens on your backend
+- add verified link association files for your production domains
+- add your actual product analytics / monitoring stack
 
 ## Notes
 
 - On a physical device, do not use `localhost` for `EXPO_PUBLIC_API_URL`
-- The AI chat sample expects a backend endpoint at `/api/chat` if you want actual model responses
 - `Zod 4` is required because the `ai` package imports `zod/v4`
+- This repository is public, but no license file has been added yet
 
-## License
-
-Private project template. Add the license you want before publishing publicly.

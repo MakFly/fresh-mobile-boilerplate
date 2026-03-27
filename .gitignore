@@ -31,7 +31,6 @@ yarn-error.*
 *.pem
 
 # local env files
-.env
 .env*.local
 
 # typescript
@@ -46,3 +45,4 @@ app-example
 
 # instant-grep index
 .ig/
+config.bat
